@@ -10,6 +10,7 @@ export async function startBackgroundTask(): Promise<void> {
     const bridge = await getBridge();
     while (true) {
         const counter = await getCounter(bridge);
+        console.log(`current counter on L2: ${counter}`);
         if (counter > processedCounter) {
             const swap = await getSwap(bridge, processedCounter);
 
