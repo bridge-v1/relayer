@@ -41,6 +41,7 @@ export async function startBackgroundTask(): Promise<void> {
                                 await sleep(1000);
                             }
                         }
+                        await sleep(45000);
                         console.log(`[swap #${processedCounter}] created on L1 with status ${creationStatus}`);
                     }
                     const l1ExecutionStatus = await executeL1Swap(processedCounter);
@@ -54,6 +55,7 @@ export async function startBackgroundTask(): Promise<void> {
                             await sleep(1000);
                         }
                     }
+                    await sleep(45000);
                     console.log(`[swap #${processedCounter}] executed on L1 with status ${l1ExecutionStatus}`);
                 } else {
                     console.log(`[swap #${processedCounter}] already executed on L1`);
