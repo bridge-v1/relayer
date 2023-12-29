@@ -35,7 +35,8 @@ export async function startBackgroundTask(): Promise<void> {
                         while (!isCreated) {
                             l1SwapData = await getL1SwapData(processedCounter);
                             if (l1SwapData.created) {
-                                isCreated = true
+                                isCreated = true;
+                                console.log(`getL1SwapData returned ${JSON.stringify(l1SwapData)}`);
                             } else {
                                 await sleep(1000);
                             }
@@ -48,6 +49,7 @@ export async function startBackgroundTask(): Promise<void> {
                         l1SwapData = await getL1SwapData(processedCounter);
                         if (l1SwapData.executed) {
                             isExecuted = true
+                            console.log(`getL1SwapData returned ${JSON.stringify(l1SwapData)}`);
                         } else {
                             await sleep(1000);
                         }
