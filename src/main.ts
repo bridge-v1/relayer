@@ -1,31 +1,18 @@
-import express, { Application, Request, Response } from "express";
-import cors from "cors";
 import dotenv from "dotenv";
 import fetch from 'node-fetch';
 
 import {
   generateWallet,
-  getRelayerWallet, startBackgroundTask,
+  getRelayerWallet,
 } from "./modules/aztec";
+
+import { startBackgroundTask } from "./modules/base";
 import { BarretenbergSync } from "@aztec/bb.js";
 
 dotenv.config();
 
-const app: Application = express();
-const port = process.env.PORT || 8000;
+async function run() {
 
-app.use(express.json());
-app.use(cors());
-
-app.get('/relayerWallet', async (req: Request, res: Response) => {
-  const address = (await getRelayerWallet()).getAddress().toString();
-
-  res.send({
-    address
-  });
-});
-
-app.listen(port, async () => {
   await BarretenbergSync.initSingleton();
   await generateWallet();
   const configRequest = await fetch(`${process.env.API_URL}/config`, {
@@ -35,22 +22,21 @@ app.listen(port, async () => {
     },
   });
   const response = await configRequest.json();
-  process.env.WMATIC_ADDRESS = response.data.WMATIC;
-  process.env.USDT_ADDRESS = response.data.USDT;
   process.env.BRIDGE_ADDRESS = response.data.bridge;
 
   const relayerAddress: string = (await getRelayerWallet()).getAddress().toString();
   const setRelayerRequest = await fetch(`${process.env.API_URL}/setRelayer`, {
     method: 'POST',
     headers: {
-      Accept: 'application/json',
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
     },
-    body: JSON.stringify({
-      relayerAddress,
-    }),
+    body: JSON.stringify({ relayerAddress }),
   });
 
-  await startBackgroundTask();
+  console.log('all set. starting...')
 
-  console.log(`Server is Fire at http://localhost:${port}`);
-});
+  await startBackgroundTask();
+}
+
+run();
