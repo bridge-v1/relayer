@@ -30,13 +30,27 @@ export async function startBackgroundTask(): Promise<void> {
                     if (!l1SwapData.created) {
                         console.log(`[swap #${processedCounter}] not created on L1`);
                         const creationStatus = await createL1Swap(swapData);
-                        await sleep(120000);
-
+                        let isCreated = false;
+                        while (!isCreated) {
+                            l1SwapData = await getL1SwapData(processedCounter);
+                            if (l1SwapData.created) {
+                                isCreated = true
+                            } else {
+                                await sleep(1000);
+                            }
+                        }
                         console.log(`[swap #${processedCounter}] created on L1 with status ${creationStatus}`);
                     }
                     const l1ExecutionStatus = await executeL1Swap(processedCounter);
-                    await sleep(120000);
-
+                    let isExecuted = false;
+                    while (!isExecuted) {
+                        l1SwapData = await getL1SwapData(processedCounter);
+                        if (l1SwapData.executed) {
+                            isExecuted = true
+                        } else {
+                            await sleep(1000);
+                        }
+                    }
                     console.log(`[swap #${processedCounter}] executed on L1 with status ${l1ExecutionStatus}`);
                 } else {
                     console.log(`[swap #${processedCounter}] already executed on L1`);
@@ -46,7 +60,7 @@ export async function startBackgroundTask(): Promise<void> {
                 console.log(`[swap #${processedCounter}] executed on L2 with status ${l2ExecutionStatus}`);
             }
             processedCounter++;
-            await sleep(5000);
+            await sleep(1000);
         }
 
         await sleep(1000);
