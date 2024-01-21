@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "dev": "nodemon -I --exec node --experimental-specifier-resolution=node --loader ts-node/esm ./src/main.ts"
+    "dev": "nodemon -I --exec node --experimental-specifier-resolution=node --loader ts-node/esm --trace-warnings ./src/main.ts"
   },
   "keywords": [],
   "author": "",

@@ -22,6 +22,7 @@ async function run() {
     },
   });
   const response = await configRequest.json();
+  // @ts-ignore
   process.env.BRIDGE_ADDRESS = response.data.bridge;
 
   const relayerAddress: string = (await getRelayerWallet()).getAddress().toString();
