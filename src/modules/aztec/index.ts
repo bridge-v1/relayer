@@ -1,6 +1,8 @@
-import {AccountWalletWithPrivateKey, AztecAddress, createPXEClient, Fq, getSchnorrAccount,} from "@aztec/aztec.js";
+import {AccountWalletWithPrivateKey, AztecAddress, createPXEClient, Fq} from "@aztec/aztec.js";
 // @ts-ignore
-import {TokenContract} from "@aztec/noir-contracts/types";
+import { TokenContract } from "@aztec/noir-contracts/Token";
+// @ts-ignore
+import { getSingleKeyAccount } from "@aztec/accounts/single_key";
 import {bridgeContract} from "./fixtures/bridge";
 import dotenv from "dotenv";
 
@@ -15,13 +17,8 @@ export async function getRelayerWallet() {
 }
 
 export async function generateWallet() {
-  const encryptionPrivateKey = Fq.random();
-  const signingPrivateKey = Fq.random();
-  const wallet = await getSchnorrAccount(
-    pxe,
-    encryptionPrivateKey,
-    signingPrivateKey
-  ).waitDeploy();
+  const privateKey = Fq.random();
+  const wallet = await getSingleKeyAccount(pxe, privateKey).waitDeploy();
 
   accounts.push(wallet)
 
